@@ -11,10 +11,13 @@ class Idol {}
 class Whip {}
 
 class HiddenTemple {
-	constructor(public idol: Idol, public whip: Whip) {}
+	constructor(
+		public idol: Idol,
+		public whip: Whip,
+	) {}
 }
 
-inject(HiddenTemple, [Idol, Whip])
+inject(HiddenTemple, [Idol, Whip]);
 
 container.register(Idol);
 container.register(Whip);
@@ -32,7 +35,7 @@ Hotwire works by registering any injectable resource (a class, instance, static 
 
 ## Class Definition
 
-Use the `inject` helper to mark a class constructor as being injected with dependencies. The first argument is the class to be marked as injectable. The second is an array of __tokens__ representing injectable values registered with the container. At runtime the DI container will determine which dependencies must be resolved and passed into the class constructor.
+Use the `inject` helper to mark a class constructor as being injected with dependencies. The first argument is the class to be marked as injectable. The second is an array of **tokens** representing injectable values registered with the container. At runtime the DI container will determine which dependencies must be resolved and passed into the class constructor.
 
 The array of tokens passed to `inject` should resolve to match the parameter types of the constructor.
 
@@ -66,11 +69,14 @@ container.register('RandomTemple', { factory: () => createTemple() });
 For class and factory providers you can additionally specify a lifespan. This determines the scope in which a single instance or return value is used through the container and resolution process.
 
 ```ts
-container.register('DoomTemple', { class: HiddenTemple, lifespan: Lifespan.Transient });
+container.register('DoomTemple', {
+	class: HiddenTemple,
+	lifespan: Lifespan.Transient,
+});
 ```
 
-| Lifespan | Description |
-|--|--|
-| `Lifespan.Transient`| A new instance or value is generted for each resolution |
-| `Lifespan.Resolution` | A single instance will be created for the scope an entire resolution chain|
-| `Lifespan.Singleton` | A single instance will be created for all resolutions |
+| Lifespan              | Description                                                                |
+| --------------------- | -------------------------------------------------------------------------- |
+| `Lifespan.Transient`  | A new instance or value is generted for each resolution                    |
+| `Lifespan.Resolution` | A single instance will be created for the scope an entire resolution chain |
+| `Lifespan.Singleton`  | A single instance will be created for all resolutions                      |
