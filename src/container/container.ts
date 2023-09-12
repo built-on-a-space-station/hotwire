@@ -1,6 +1,7 @@
+import { Constructor, Token } from '../types/global';
 import { Provider, ProviderType } from './provider';
 import { Registry } from './registry';
-import { Constructor, Lifespan, Token } from './types';
+import { Lifespan } from './types';
 
 type ClassConfig = { class: Constructor; lifespan?: Lifespan };
 type FactoryConfig = { factory: (token: Token) => any; lifespan?: Lifespan };
@@ -42,7 +43,7 @@ export class Container {
 				new Provider(ProviderType.Class, ctorOrConfig),
 			);
 		} else if (isConfig(ctorOrConfig)) {
-			const provider = this.getProvider(ctorOrConfig);
+			const provider = this.createProviderFromConfig(ctorOrConfig);
 			this.registry.add(ctorOrToken, provider);
 		} else {
 			throw new Error('Invalid registration attempt');
@@ -53,7 +54,7 @@ export class Container {
 		return this.registry.get(token);
 	}
 
-	private getProvider(config: RegisterConfig) {
+	private createProviderFromConfig(config: RegisterConfig) {
 		if ('class' in config) {
 			return new Provider(ProviderType.Class, config.class, config.lifespan);
 		}

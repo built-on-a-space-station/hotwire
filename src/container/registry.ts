@@ -1,5 +1,5 @@
+import { Token } from '../types/global';
 import { Provider } from './provider';
-import { Token } from './types';
 
 export class Registry {
 	providers: Map<Token, Provider> = new Map();
