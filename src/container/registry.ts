@@ -9,8 +9,6 @@ export class Registry {
 	}
 
 	get(token: Token) {
-		const provider = this.providers.get(token);
-
-		return provider?.actor;
+		return this.providers.get(token);
 	}
 }
