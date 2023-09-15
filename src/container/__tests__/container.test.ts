@@ -1,4 +1,4 @@
-import { inject, listInjections } from '../../injection';
+import { inject } from '../../injection';
 import { Container } from '../container';
 import { Lifespan } from '../types';
 
