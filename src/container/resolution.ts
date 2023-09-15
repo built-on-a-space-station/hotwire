@@ -6,7 +6,6 @@ import { Lifespan } from './types';
 
 export class Resolution {
 	private resolutions = new Map<Token, any>();
-	private current = new Map<Token, any>();
 
 	constructor(
 		private registry: Registry,
@@ -75,7 +74,6 @@ export class Resolution {
 		for (const inject of injectTokens) {
 			const value = this.ensureResult(inject);
 			injects.push(value);
-			this.current.delete(inject);
 		}
 
 		const instance = new provider.actor(...injects);
