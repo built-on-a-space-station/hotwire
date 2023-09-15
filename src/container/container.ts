@@ -46,7 +46,7 @@ export class Container {
 		} else if (isConstructor(ctorOrConfig)) {
 			this.addConstructorToken(ctorOrToken, ctorOrConfig);
 		} else if (isConfig(ctorOrConfig)) {
-			const provider = this.createProviderFromConfig(ctorOrConfig);
+			const provider = this.createProviderFromConfig(ctorOrToken, ctorOrConfig);
 			this.registry.add(ctorOrToken, provider);
 		} else {
 			throw new Error('Invalid registration attempt');
@@ -70,18 +70,24 @@ export class Container {
 	private addConstructorToken(token: Token, ctor: Constructor) {
 		const dependencies = listInjections(ctor);
 
-		this.registry.add(token, new Provider(ProviderType.Class, ctor));
+		this.registry.add(token, new Provider(token, ProviderType.Class, ctor));
 
 		this.graph.add(token, dependencies);
 	}
 
-	private createProviderFromConfig(config: RegisterConfig) {
+	private createProviderFromConfig(token: Token, config: RegisterConfig) {
 		if ('class' in config) {
-			return new Provider(ProviderType.Class, config.class, config.lifespan);
+			return new Provider(
+				token,
+				ProviderType.Class,
+				config.class,
+				config.lifespan,
+			);
 		}
 
 		if ('factory' in config) {
 			return new Provider(
+				token,
 				ProviderType.Factory,
 				config.factory,
 				config.lifespan,
@@ -89,7 +95,12 @@ export class Container {
 		}
 
 		if ('value' in config) {
-			return new Provider(ProviderType.Value, config.value, Lifespan.Transient);
+			return new Provider(
+				token,
+				ProviderType.Value,
+				config.value,
+				Lifespan.Singleton,
+			);
 		}
 
 		throw new Error(
