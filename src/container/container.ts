@@ -41,7 +41,7 @@ export class Container {
 		ctorOrToken: Constructor | Token,
 		ctorOrConfig?: Constructor | RegisterConfig,
 	) {
-		if (isConstructor(ctorOrToken)) {
+		if (isConstructor(ctorOrToken) && !ctorOrConfig) {
 			this.addConstructorToken(ctorOrToken, ctorOrToken);
 		} else if (isConstructor(ctorOrConfig)) {
 			this.addConstructorToken(ctorOrToken, ctorOrConfig);

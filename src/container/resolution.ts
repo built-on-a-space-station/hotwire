@@ -55,7 +55,7 @@ export class Resolution {
 			return source.get(token);
 		}
 
-		throw new Error('Working on it');
+		throw new Error('Invalid provider type');
 	}
 
 	private ensureFactoryResult(token: Token, provider: Provider) {
