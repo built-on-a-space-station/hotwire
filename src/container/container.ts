@@ -42,15 +42,9 @@ export class Container {
 		ctorOrConfig?: Constructor | RegisterConfig,
 	) {
 		if (isConstructor(ctorOrToken)) {
-			this.registry.add(
-				ctorOrToken,
-				new Provider(ProviderType.Class, ctorOrToken),
-			);
+			this.addConstructorToken(ctorOrToken, ctorOrToken);
 		} else if (isConstructor(ctorOrConfig)) {
-			this.registry.add(
-				ctorOrToken,
-				new Provider(ProviderType.Class, ctorOrConfig),
-			);
+			this.addConstructorToken(ctorOrToken, ctorOrConfig);
 		} else if (isConfig(ctorOrConfig)) {
 			const provider = this.createProviderFromConfig(ctorOrConfig);
 			this.registry.add(ctorOrToken, provider);
@@ -73,8 +67,10 @@ export class Container {
 		return resolution.resolve<T>(token);
 	}
 
-	private addToGraph(token: Token, ctor: Constructor) {
+	private addConstructorToken(token: Token, ctor: Constructor) {
 		const dependencies = listInjections(ctor);
+
+		this.registry.add(token, new Provider(ProviderType.Class, ctor));
 
 		this.graph.add(token, dependencies);
 	}
@@ -93,7 +89,7 @@ export class Container {
 		}
 
 		if ('value' in config) {
-			return new Provider(ProviderType.Value, config.value, Lifespan.Singleton);
+			return new Provider(ProviderType.Value, config.value, Lifespan.Transient);
 		}
 
 		throw new Error(

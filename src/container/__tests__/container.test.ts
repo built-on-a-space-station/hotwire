@@ -75,3 +75,28 @@ it('resolves dependencies', () => {
 	expect(a).toBeInstanceOf(A);
 	expect(a.b).toBeInstanceOf(B);
 });
+
+it('resolves multiple dependency types', () => {
+	const container = new Container();
+
+	const getB = () => 'B';
+
+	class A {
+		constructor(
+			public b: string,
+			public c: string,
+		) {}
+	}
+
+	inject(A, ['GetB', 'GetC']);
+
+	container.register(A);
+	container.register('GetB', { factory: getB });
+	container.register('GetC', { value: 'C' });
+
+	const a = container.resolve<A>(A);
+
+	expect(a).toBeInstanceOf(A);
+	expect(a.b).toBe('B');
+	expect(a.c).toBe('C');
+});

@@ -8,16 +8,16 @@ it('creates a manifest of linear dependencies', () => {
 
 	const manifest = graph.createManifestFor('A');
 
-	expect(manifest).toEqual([['D'], ['B', 'C'], ['A']]);
+	expect(manifest).toEqual(['D', 'C', 'B', 'A']);
 });
 
 it('creates a manifest of crossed dependencies', () => {
 	const graph = new DependencyGraph();
 
 	graph.add('A', ['B', 'C']);
-	graph.add('B', ['C', 'D']);
+	graph.add('C', ['B', 'D']);
 
 	const manifest = graph.createManifestFor('A');
 
-	expect(manifest).toEqual([['C', 'D'], ['B'], ['A']]);
+	expect(manifest).toEqual(['D', 'B', 'C', 'A']);
 });

@@ -3,48 +3,37 @@ import { Token } from '../types/global';
 export class DependencyGraph {
 	private dependencies = new Map<Token, Token[]>();
 
-	add(token: Token, deps: Token[]) {
+	add(token: Token, deps: Token[]): void {
 		this.dependencies.set(token, deps);
 	}
 
-	createManifestFor(token: Token) {
-		const manifest: Token[][] = [];
+	get(token: Token): Token[] {
+		return this.dependencies.get(token) || [];
+	}
 
-		let currentLevel: Token[] = [];
-		let nextLevel: Token[] = [token];
+	createManifestFor(token: Token): Token[] {
+		const manifest: Token[] = [];
+		const current: Token[] = [];
+		const next = new Set([token]);
 
 		do {
-			currentLevel = nextLevel;
-			nextLevel = [];
+			current.length = 0;
+			current.push(...next);
+			manifest.push(...next);
 
-			manifest[manifest.length] = [];
+			next.clear();
 
-			manifest[manifest.length - 1] = currentLevel;
+			for (const token of current) {
+				const deps = this.dependencies.get(token);
 
-			for (const token of currentLevel) {
-				const deps = this.dependencies.get(token) || [];
-
-				nextLevel.push(...deps);
+				if (deps) {
+					deps.forEach((item) => next.add(item));
+				}
 			}
-
-			nextLevel = [...new Set(nextLevel)];
-		} while (nextLevel.length);
+		} while (next.size);
 
 		const ordered = manifest.reverse();
 
-		ordered.forEach((level, index, manifest) => {
-			for (const token of level) {
-				for (let i = index + 1; i < manifest.length; i++) {
-					const searchLevel = manifest[i];
-					const tokenIndex = searchLevel.findIndex((tok) => tok === token);
-
-					if (tokenIndex !== -1) {
-						searchLevel.splice(tokenIndex, 1);
-					}
-				}
-			}
-		});
-
-		return ordered;
+		return [...new Set(ordered)];
 	}
 }
