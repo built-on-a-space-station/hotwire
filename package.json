@@ -8,10 +8,11 @@
 	],
 	"types": "dist/index.d.ts",
 	"repository": {
-		"url": "https://github.com/built-on-a-space-station/hotwire-ioc"
+		"url": "https://github.com/built-on-a-space-station/hotwire"
 	},
 	"scripts": {
 		"build": "tsc --declaration",
+		"build:watch": "tsc --declaration -w",
 		"format": "prettier . --write",
 		"prepare": "husky install",
 		"test": "jest",

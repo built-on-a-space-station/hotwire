@@ -7,3 +7,10 @@ it('applies injection tokens to a constructor', () => {
 
 	expect(listInjections(A)).toEqual(['a', 'b']);
 });
+
+it.each([1, 'a', {}, null])(
+	'returns an empty array if no injections are found',
+	(entity) => {
+		expect(listInjections(entity)).toEqual([]);
+	},
+);

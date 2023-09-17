@@ -5,10 +5,10 @@ export const inject = (ctor: Constructor, tokens: Token[] = []) => {
 	Object.assign(ctor, { [InjectionSym]: tokens });
 };
 
-export const listInjections = (ctor: Constructor): Token[] => {
-	if (!(InjectionSym in ctor)) {
-		return [];
+export const listInjections = (entity: any): Token[] => {
+	if (!!entity && typeof entity === 'function' && InjectionSym in entity) {
+		return entity[InjectionSym] as Token[];
 	}
 
-	return ctor[InjectionSym] as Token[];
+	return [];
 };

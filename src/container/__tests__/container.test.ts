@@ -77,6 +77,26 @@ it('resolves dependencies', () => {
 	expect(a.b).toBeInstanceOf(B);
 });
 
+it('resolves dependencies via config', () => {
+	const container = new Container();
+
+	class B {}
+
+	class A {
+		constructor(public b: B) {}
+	}
+
+	inject(A, [B]);
+
+	container.register(A, { class: A });
+	container.register(B, { class: B });
+
+	const a = container.resolve<A>(A);
+
+	expect(a).toBeInstanceOf(A);
+	expect(a.b).toBeInstanceOf(B);
+});
+
 it('resolves multiple dependency types', () => {
 	const container = new Container();
 

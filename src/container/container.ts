@@ -46,8 +46,7 @@ export class Container {
 		} else if (isConstructor(ctorOrConfig)) {
 			this.addConstructorToken(ctorOrToken, ctorOrConfig);
 		} else if (isConfig(ctorOrConfig)) {
-			const provider = this.createProviderFromConfig(ctorOrToken, ctorOrConfig);
-			this.registry.add(ctorOrToken, provider);
+			this.addConfigToken(ctorOrToken, ctorOrConfig);
 		} else {
 			throw new Error('Invalid registration attempt');
 		}
@@ -68,11 +67,16 @@ export class Container {
 	}
 
 	private addConstructorToken(token: Token, ctor: Constructor) {
-		const dependencies = listInjections(ctor);
-
 		this.registry.add(token, new Provider(token, ProviderType.Class, ctor));
 
-		this.graph.add(token, dependencies);
+		this.graph.add(token, listInjections(ctor));
+	}
+
+	private addConfigToken(token: Token, config: RegisterConfig) {
+		const provider = this.createProviderFromConfig(token, config);
+
+		this.registry.add(token, provider);
+		this.graph.add(provider.token, listInjections(provider.actor));
 	}
 
 	private createProviderFromConfig(token: Token, config: RegisterConfig) {
