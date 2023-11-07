@@ -202,3 +202,21 @@ it('resolves resolution lifespan', () => {
 	expect(a.b.d).toBe(a.c.d);
 	expect(a.b.d).not.toBe(b.b.d);
 });
+
+it('overrides replaces singleton instances', () => {
+	const container = new Container();
+
+	class A {}
+	class B {}
+
+	container.register(A, { class: A, lifespan: Lifespan.Singleton });
+
+	const a = container.resolve(A);
+
+	container.register(A, { class: B, lifespan: Lifespan.Singleton });
+
+	const b = container.resolve(A);
+
+	expect(a).toBeInstanceOf(A);
+	expect(b).toBeInstanceOf(B);
+});
