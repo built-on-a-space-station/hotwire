@@ -77,6 +77,10 @@ export class Container {
 
 		this.registry.add(token, provider);
 		this.graph.add(provider.token, listInjections(provider.actor));
+
+		if (provider.lifespan === Lifespan.Singleton) {
+			this.singletons.delete(provider.token);
+		}
 	}
 
 	private createProviderFromConfig(token: Token, config: RegisterConfig) {
